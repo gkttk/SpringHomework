@@ -1,6 +1,7 @@
 package com.github.gkttk;
 
 import com.github.gkttk.annotationConfig3.Bean3;
+import com.github.gkttk.injectBeans.Bean49;
 import com.github.gkttk.javaConfig2.Bean2;
 import com.github.gkttk.javaConfig2.Config;
 import com.github.gkttk.javaConfig2.componentScan.Bean2Scan;
@@ -51,6 +52,25 @@ public class Tests {
         context.close();
 
     }
+
+
+    @Test
+    public void testInjects4(){
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        context.scan("com/github/gkttk/injectBeans");
+        context.scan("com/github/gkttk/injectBeans/apiBean");
+        context.refresh();
+        Bean49 bean49 = context.getBean("bean49", Bean49.class);
+        System.out.println("Инжект через поле, задание 4: " + bean49.getBeanFieldInject().getName());
+        System.out.println("Инжект через сеттер, задание 5: " + bean49.getBeanSetterInject().getName());
+        System.out.println("Инжект через конструктор, задание 6: " + bean49.getBeanCounstructorInject().getName());
+        System.out.println("Первый бин с общим интерфейсом BeanMarker, задание 7: " + bean49.getBeanMarker1().getName());
+        System.out.println("Второй бин с общим интерфейсом BeanMarker, задание 7: " + bean49.getBeanMarker2().getName());
+
+        context.close();
+    }
+
+
 
 
 }
