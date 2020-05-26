@@ -8,6 +8,15 @@ default-destroy-method="destroy">
 <bean id="bean1" class="com.github.gkttk.xmlConfig1.Bean1">
     <constructor-arg index="0" value="Бин1"/>
     <constructor-arg index="1" ref="refBean1"/>
+    <property name="list">
+        <list>
+            <value>Один</value>
+            <value>Два</value>
+            <value>Три</value>
+            <value>Четыре</value>
+            <value>Пять</value>
+        </list>
+    </property>
 </bean>
 
     <bean id="refBean1" class="com.github.gkttk.xmlConfig1.RefBean1">
