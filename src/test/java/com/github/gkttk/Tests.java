@@ -1,7 +1,9 @@
 package com.github.gkttk;
 
 import com.github.gkttk.annotationConfig3.Bean3;
-import com.github.gkttk.injectBeans.Bean49;
+import com.github.gkttk.beanPostProcessor10.Bean10;
+import com.github.gkttk.injectBean89.Bean89;
+import com.github.gkttk.injectBeans47.Bean47;
 import com.github.gkttk.javaConfig2.Bean2;
 import com.github.gkttk.javaConfig2.Config;
 import com.github.gkttk.javaConfig2.componentScan.Bean2Scan;
@@ -57,16 +59,55 @@ public class Tests {
     @Test
     public void testInjects4(){
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-        context.scan("com/github/gkttk/injectBeans");
-        context.scan("com/github/gkttk/injectBeans/apiBean");
+        context.scan("com/github/gkttk/injectBeans47");
+        context.scan("com/github/gkttk/injectBeans47/apiBean");
         context.refresh();
-        Bean49 bean49 = context.getBean("bean49", Bean49.class);
-        System.out.println("Инжект через поле, задание 4: " + bean49.getBeanFieldInject().getName());
-        System.out.println("Инжект через сеттер, задание 5: " + bean49.getBeanSetterInject().getName());
-        System.out.println("Инжект через конструктор, задание 6: " + bean49.getBeanCounstructorInject().getName());
-        System.out.println("Первый бин с общим интерфейсом BeanMarker, задание 7: " + bean49.getBeanMarker1().getName());
-        System.out.println("Второй бин с общим интерфейсом BeanMarker, задание 7: " + bean49.getBeanMarker2().getName());
+        Bean47 bean47 = context.getBean("bean47", Bean47.class);
+        System.out.println("Инжект через поле, задание 4: " + bean47.getBeanFieldInject().getName());
+        System.out.println("Инжект через сеттер, задание 5: " + bean47.getBeanSetterInject().getName());
+        System.out.println("Инжект через конструктор, задание 6: " + bean47.getBeanCounstructorInject().getName());
+        System.out.println("Первый бин с общим интерфейсом BeanMarker, задание 7: " + bean47.getBeanMarker1().getName());
+        System.out.println("Второй бин с общим интерфейсом BeanMarker, задание 7: " + bean47.getBeanMarker2().getName());
 
+        context.close();
+    }
+
+
+    @Test
+    public void testInjects5(){
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        context.scan("com/github/gkttk/injectBean89");
+        context.refresh();
+        Bean89 bean89 = context.getBean("bean89", Bean89.class);
+
+        bean89.getBeansList().forEach(bean-> System.out.println(bean.getName() + " " + bean.getClass()));
+
+        System.out.println("Поле name через property-file: " + bean89.getName());
+        System.out.println("Поле age через property-file: " + bean89.getAge());
+
+
+        context.close();
+    }
+
+
+    @Test
+    public void testProfiling6(){
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
+        context.scan("com/github/gkttk/beanPostProcessor10");
+        context.refresh();
+        Bean10 bean10Impl = context.getBean("bean10Impl", Bean10.class);
+        System.out.println("---------------------");
+        int count = bean10Impl.count();
+        System.out.println("count = " + count);
+        System.out.println("---------------------");
+        bean10Impl.threads();
+        System.out.println("---------------------");
+        String str = bean10Impl.waitString();
+        System.out.println("waitString строка = " + str);
+        System.out.println("---------------------");
+        bean10Impl.init();
+        bean10Impl.destroy();
+        System.out.println("---------------------");
         context.close();
     }
 

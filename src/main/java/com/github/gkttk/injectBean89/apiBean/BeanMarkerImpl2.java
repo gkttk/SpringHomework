@@ -1,4 +1,4 @@
-package com.github.gkttk.injectBeans.apiBean;
+package com.github.gkttk.injectBean89.apiBean;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

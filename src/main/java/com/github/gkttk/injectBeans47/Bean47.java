@@ -1,13 +1,12 @@
-package com.github.gkttk.injectBeans;
+package com.github.gkttk.injectBeans47;
 
-import com.github.gkttk.injectBeans.apiBean.BeanMarker;
-import com.github.gkttk.injectBeans.apiBean.BeanMarkerImpl1;
+import com.github.gkttk.injectBeans47.apiBean.BeanMarker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Bean49 {
+public class Bean47 {
 
     @Autowired
     private BeanFieldInject beanFieldInject;   //инжект через поле(задание 4, тест 4)
@@ -33,7 +32,7 @@ public class Bean49 {
     }
 
     @Autowired
-    public Bean49(BeanCounstructorInject beanCounstructorInject) {
+    public Bean47(BeanCounstructorInject beanCounstructorInject) {
         this.beanCounstructorInject = beanCounstructorInject;
     }
 
