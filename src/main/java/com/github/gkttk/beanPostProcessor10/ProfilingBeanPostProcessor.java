@@ -7,12 +7,12 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class ProfilingBeanPostProcessor implements BeanPostProcessor {
-    List<String> methodNames = new ArrayList<>();
+
+    Map<Object, List<Method>> map = new HashMap<>();
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
@@ -20,7 +20,22 @@ public class ProfilingBeanPostProcessor implements BeanPostProcessor {
         Method[] declaredMethods = beanClass.getDeclaredMethods();
         for (Method declaredMethod : declaredMethods) {
             if (declaredMethod.isAnnotationPresent(Profiling.class)) {
-                methodNames.add(declaredMethod.getName());
+                Method method = null;
+                if (!map.containsKey(bean)) {
+                    map.put(bean, new ArrayList<>());
+                }
+
+                List<Class<?>> interfaces = Arrays.asList(beanClass.getInterfaces());
+
+                for (Class<?> anInterface : interfaces) {
+                    try {
+                        method = anInterface.getMethod(declaredMethod.getName(), declaredMethod.getParameterTypes());
+                    } catch (NoSuchMethodException e) {
+                        continue;
+                    }
+                }
+                map.get(bean).add(method);
+
             }
         }
         return bean;
@@ -28,29 +43,30 @@ public class ProfilingBeanPostProcessor implements BeanPostProcessor {
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        if (!methodNames.isEmpty()) {
+        if (map.containsKey(bean)) {
             Class<?> beanClass = bean.getClass();
+            List<Method> methods = map.get(bean);
             return Proxy.newProxyInstance(beanClass.getClassLoader(), beanClass.getInterfaces(), new InvocationHandler() {
                 @Override
                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                    if (methodNames.contains(method.getName())) {
+                    if (methods.contains(method)) {
                         long start = System.nanoTime();
                         Object returnValue = method.invoke(bean, args);
                         long finish = System.nanoTime();
                         System.out.println("Метод " + method.getName() + " отработал за " + (finish - start) + " наносекунд.");
-                        methodNames.remove(method.getName());
+                        methods.remove(method);
+                        if (methods.size() == 0) {
+                            map.remove(bean);
+                        }
                         return returnValue;
                     } else {
                         return method.invoke(bean, args);
                     }
                 }
             });
-
         }
-
         return bean;
     }
-
 
 }
 

@@ -18,6 +18,10 @@ public class Bean10Impl implements Bean10 {
         System.out.println("В init методе");
     }
 
+    @Profiling
+    public void init(String a){
+        System.out.println(a);
+    }
 
     @PreDestroy
     @Profiling

@@ -106,6 +106,9 @@ public class Tests {
         System.out.println("waitString строка = " + str);
         System.out.println("---------------------");
         bean10Impl.init();
+        System.out.println("---------------------");
+        bean10Impl.init("Это второй инит c дополнительным аргументом");
+        System.out.println("---------------------");
         bean10Impl.destroy();
         System.out.println("---------------------");
         context.close();

@@ -10,5 +10,7 @@ public interface Bean10 {
 
     void init();
 
+    void init(String a);
+
     void destroy();
 }
