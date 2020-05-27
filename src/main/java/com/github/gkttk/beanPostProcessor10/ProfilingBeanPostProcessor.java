@@ -12,7 +12,7 @@ import java.util.*;
 @Component
 public class ProfilingBeanPostProcessor implements BeanPostProcessor {
 
-    Map<Object, List<Method>> map = new HashMap<>();
+    Map<String, List<Method>> map = new HashMap<>();
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
@@ -21,8 +21,8 @@ public class ProfilingBeanPostProcessor implements BeanPostProcessor {
         for (Method declaredMethod : declaredMethods) {
             if (declaredMethod.isAnnotationPresent(Profiling.class)) {
                 Method method = null;
-                if (!map.containsKey(bean)) {
-                    map.put(bean, new ArrayList<>());
+                if (!map.containsKey(beanName)) {
+                    map.put(beanName, new ArrayList<>());
                 }
 
                 List<Class<?>> interfaces = Arrays.asList(beanClass.getInterfaces());
@@ -34,7 +34,7 @@ public class ProfilingBeanPostProcessor implements BeanPostProcessor {
                         continue;
                     }
                 }
-                map.get(bean).add(method);
+                map.get(beanName).add(method);
 
             }
         }
@@ -43,9 +43,9 @@ public class ProfilingBeanPostProcessor implements BeanPostProcessor {
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        if (map.containsKey(bean)) {
+        if (map.containsKey(beanName)) {
             Class<?> beanClass = bean.getClass();
-            List<Method> methods = map.get(bean);
+            List<Method> methods = map.get(beanName);
             return Proxy.newProxyInstance(beanClass.getClassLoader(), beanClass.getInterfaces(), new InvocationHandler() {
                 @Override
                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -56,7 +56,7 @@ public class ProfilingBeanPostProcessor implements BeanPostProcessor {
                         System.out.println("Метод " + method.getName() + " отработал за " + (finish - start) + " наносекунд.");
                         methods.remove(method);
                         if (methods.size() == 0) {
-                            map.remove(bean);
+                            map.remove(beanName);
                         }
                         return returnValue;
                     } else {
